@@ -40,8 +40,7 @@ def argparser():
 
 def folder_files(folder):
     for dir, subfolders, filenames in os.walk(folder):
-        images = [{"name": os.path.join(dir, filename), "is_image": filename.lower().endswith(tuple(IMAGE_EXTENSIONS)) }for filename in filenames]
-    return images
+        return [ {"name": os.path.join(dir, filename), "is_image": filename.lower().endswith(tuple(IMAGE_EXTENSIONS))} for filename in filenames ]
 
 def str2date(date_str):
     return dt.datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
@@ -97,7 +96,7 @@ def main():
     # 1. parse cmq line arguments
     args = argparser()
     print(f"Merge {args.folders} folders into {args.output} folder")
-    # 2. merge photo based on exif
+    # 2. merge photo based on exif or filename
     merge_folders(args.folders, args.output)
     return 0
 
