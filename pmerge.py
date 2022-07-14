@@ -57,7 +57,7 @@ def output_file(folder, orig):
     if orig["is_image"]:
         date_str = exif_date(orig['name'])
     if not date_str:
-        date_str = guess_date(orig['name'])
+        date_str = guess_date_from_filename(orig['name'])
 
     return os.path.join(folder, f"{date_str}_{img_folder}-{img_basename}")
 
@@ -77,7 +77,7 @@ def exif_date(image_file):
             return date2str(str2date(str(d)))
     return None
 
-def guess_date(image_file):
+def guess_date_from_filename(image_file):
     match = re.search( r'(\d{8})[_-]?(\d*)', image_file, re.M|re.I)
     return f"{match.group(1)}{match.group(2)}" if match else DATE_ERROR
 
