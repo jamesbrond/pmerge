@@ -75,7 +75,10 @@ def exif_date(image_file):
     for tag in EXIF_DATE_TAGS:
         d = tags.get(tag)
         if d:
-            return date2str(str2date(str(d)))
+            try:
+                return date2str(str2date(str(d)))
+            except Exception:
+                continue
     return None
 
 def guess_date_from_filename(image_file):
