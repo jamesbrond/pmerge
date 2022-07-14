@@ -26,6 +26,7 @@ def dir_path(path):
 def dir_out_path(path):
     if not os.path.exists(path):
         os.mkdir(path)
+        print(f"created {path} folder")
     elif not os.path.isdir(path):
         raise NotADirectoryError(path)
     return path
@@ -33,7 +34,7 @@ def dir_out_path(path):
 def argparser():
     parser = argparse.ArgumentParser(prog="pmerge", usage='%(prog)s [options]', description='Photo Merge: merge folder of photos in on folder ordering them by timestamp', epilog='program realized to remember the Ukraine victims ~@:-]')
 
-    parser.add_argument(dest='folders', nargs='+', help='Folders to merge', type=dir_path)
+    parser.add_argument(dest='folders', nargs='+', help='Two or more folders to merge', type=dir_path)
     parser.add_argument('-o', '--output', dest='output', default=f"pmerge_{next(tempfile._get_candidate_names())}", help='Output folder, if not exists it will be created', type=dir_out_path)
 
     return parser.parse_args()
@@ -78,7 +79,7 @@ def exif_date(image_file):
     return None
 
 def guess_date_from_filename(image_file):
-    match = re.search( r'(\d{8})[_-]?(\d*)', image_file, re.M|re.I)
+    match = re.search( r'(\d{8})[_-]?(\d*)', image_file)
     return f"{match.group(1)}{match.group(2)}" if match else DATE_ERROR
 
 def merge_folders(folders, output):
