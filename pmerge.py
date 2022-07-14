@@ -83,7 +83,7 @@ def exif_date(image_file):
 
 def guess_date_from_filename(image_file):
     match = re.search( r'(\d{8})[_-]?(\d*)', image_file)
-    return f"{match.group(1)}{match.group(2)}" if match else DATE_ERROR
+    return f"{match.group(1)}{match.group(2):0<6}" if match else DATE_ERROR
 
 def merge_folders(folders, output):
     for folder in folders:
