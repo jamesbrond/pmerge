@@ -5,6 +5,7 @@
 # @Version : 0.0.1
 
 import os
+import re
 import sys
 import shutil
 import argparse
@@ -15,6 +16,7 @@ from pathlib import Path
 
 IMAGE_EXTENSIONS = ('.jpg', '.jpeg')
 EXIF_DATE_TAGS = [ 'EXIF DateTimeOriginal', 'Image DateTime', 'EXIF DateTimeDigitized' ]
+DATE_ERROR = "999999999999999"
 
 def dir_path(path):
     if not os.path.isdir(path):
@@ -36,9 +38,9 @@ def argparser():
 
     return parser.parse_args()
 
-def image_files(folder):
+def folder_files(folder):
     for dir, subfolders, filenames in os.walk(folder):
-        images = [os.path.join(dir, filename) for filename in filenames if filename.lower().endswith(tuple(IMAGE_EXTENSIONS))]
+        images = [{"name": os.path.join(dir, filename), "is_image": filename.lower().endswith(tuple(IMAGE_EXTENSIONS)) }for filename in filenames]
     return images
 
 def str2date(date_str):
@@ -47,18 +49,25 @@ def str2date(date_str):
 def date2str(date):
     return date.strftime('%Y%m%d%H%M%S')
 
-def output_file(folder, orig, date):
-    img_basename = os.path.basename(orig)
-    path = Path(orig)
+def output_file(folder, orig):
+    img_basename = os.path.basename(orig['name'])
+    path = Path(orig['name'])
     img_folder = os.path.basename(path.parent.absolute())
-    return os.path.join(folder, f"{date2str(date)}_{img_folder}-{img_basename}")
+
+    date_str = None
+    if orig["is_image"]:
+        date_str = exif_date(orig['name'])
+    if not date_str:
+        date_str = guess_date(orig['name'])
+
+    return os.path.join(folder, f"{date_str}_{img_folder}-{img_basename}")
 
 def copy_file(orig, dest):
     shutil.copyfile(orig, dest)
 
 def exif_tags(image_file):
     with open(image_file, 'rb') as f:
-        return exifread.process_file(f, details=True)
+        return exifread.process_file(f, details=False)
 
 def exif_date(image_file):
     tags = exif_tags(image_file)
@@ -66,7 +75,12 @@ def exif_date(image_file):
     for tag in EXIF_DATE_TAGS:
         d = tags.get(tag)
         if d:
-            return str2date(str(d))
+            return date2str(str2date(str(d)))
+    return None
+
+def guess_date(image_file):
+    match = re.search( r'(\d{8})[_-]?(\d*)', image_file, re.M|re.I)
+    return f"{match.group(1)}{match.group(2)}" if match else DATE_ERROR
 
 def merge_folders(folders, output):
     for folder in folders:
@@ -74,9 +88,10 @@ def merge_folders(folders, output):
 
 def merge(folder, output):
     print(f"Merge {folder}")
-    for image in image_files(folder):
-        print(f"{image} -> {output_file(output, image, exif_date(image))}")
-        copy_file(image, output_file(output, image, exif_date(image)))
+    for f in folder_files(folder):
+        new_file = output_file(output, f)
+        print(f"{f['name']} -> {new_file}")
+        copy_file(f['name'], new_file)
 
 def main():
     # 1. parse cmq line arguments
