@@ -1,1 +1,2 @@
+difPy==2.4.4
 ExifRead==3.0.0
