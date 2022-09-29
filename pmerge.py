@@ -4,7 +4,7 @@
 # @Author  : Diego Brondo (jamesbrond@gmail.com)
 # @Version : 0.0.1
 """
-Merge two or more photo folders into one renaming phontos based on timestamp
+Merge two or more photo folders into one renaming photos based on timestamp
 """
 
 import os
