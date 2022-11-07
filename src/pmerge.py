@@ -146,20 +146,28 @@ def guess_date_from_filename(image_file):
 
 def merge_folders(folders, output):
     """Merge all photoes in all the folders"""
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    str = ''
     for folder in folders:
-        merge(folder, output)
+        str += merge(folder, output)
+    return str
 
 
 def merge(folder, output):
     """Merge all photoes in the folder"""
+    str = f"Merge {folder}"
     print(f"Merge {folder}")
     for curdir in folder_files(folder):
         new_file = output_file(output, curdir)
+        str += f"{curdir['name']} -> {new_file}"
         print(f"{curdir['name']} -> {new_file}")
         copy_file(curdir['name'], new_file)
+    return str
 
 
-def duplicates(folder):
+def duplicates(folder, write_to_file = True):
     """Find duplicated images in folder"""
     search = dif(
         folder,
@@ -169,14 +177,16 @@ def duplicates(folder):
         delete=False,
         silent_del=False
     )
+    if write_to_file:
+        with open(os.path.join(folder, 'duplicates_results.json'), 'w', encoding='utf-8') as out:
+            json.dump(search.result, out, ensure_ascii=False, indent=4)
+        with open(os.path.join(folder, 'duplicates_lower_quality.txt'), 'w', encoding='utf-8') as out:
+            for low in search.lower_quality:
+                out.write(low)
+        with open(os.path.join(folder, 'duplicates_stats.json'), 'w', encoding='utf-8') as out:
+            json.dump(search.stats, out, ensure_ascii=False, indent=4)
 
-    with open(os.path.join(folder, 'duplicates_results.json'), 'w', encoding='utf-8') as out:
-        json.dump(search.result, out, ensure_ascii=False, indent=4)
-    with open(os.path.join(folder, 'duplicates_lower_quality.txt'), 'w', encoding='utf-8') as out:
-        for low in search.lower_quality:
-            out.write(low)
-    with open(os.path.join(folder, 'duplicates_stats.json'), 'w', encoding='utf-8') as out:
-        json.dump(search.stats, out, ensure_ascii=False, indent=4)
+    return json.dumps(search.result)
 
 
 def main():

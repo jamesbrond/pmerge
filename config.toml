@@ -1,0 +1,11 @@
+[service]
+mode = false
+host = "0.0.0.0"
+port = 54321
+
+[folders]
+input_list = [
+    "tmp/sync1",
+    "tmp/sync2",
+]
+output = "/home/jbrond/src/misc/pmerge/tmp/photobook"

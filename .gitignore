@@ -1,4 +1,12 @@
 .make/
+build/
 test/
 tmp/
 venv/
+src/__pycache__/
+
+web/.angular/
+web/.vscode/
+web/node_modules/
+web/npm-debug.log
+web/yarn-error.log

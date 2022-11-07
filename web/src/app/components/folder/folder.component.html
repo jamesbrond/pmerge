@@ -1,0 +1,12 @@
+<ul class="list-unstyled ms-3">
+    <li *ngFor="let folder of folders">
+        <input *ngIf="folder.is_dir && !folder.readonly" class="form-check-input me-1" type="checkbox" (change)="select($event, folder)" />
+        <span class="form-check-label" (click)="expand(folder)">
+            <fa-icon [icon]="icon(folder)"></fa-icon> {{folder.name}}
+            <button *ngIf="!folder.readonly" type="button" class="btn btn-sm btn-link" (click)="delete(folder)">
+                <fa-icon [icon]="icon_trash" class="text-danger"></fa-icon>
+            </button>
+        </span>
+        <pmerge-folder *ngIf="folder.is_open" [folders]="folder.children" (preview)="previewChange($event)"></pmerge-folder>
+    </li>
+</ul>

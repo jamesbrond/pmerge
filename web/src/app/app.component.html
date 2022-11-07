@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h4>Folders</h4>
+            <pmerge-folder [folders]="roots" (preview)="previewChange($event)"></pmerge-folder>
+        </div>
+
+        <div class="col">
+            <h4>Output</h4>
+            <form [formGroup]="form" (submit)="merge()" class="row gy-2 gx-3 align-items-center">
+                <div class="col-auto">
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="submit"
+                            [disabled]="form.invalid || selected.selectedFolders.length === 0">Merge into</button>
+                        <div class="input-group-text font-monospace fs-6">{{output}}/</div>
+                        <input type="text" class="form-control" id="output" formControlName="target" />
+                        <button (click)="duplicates()" class="btn btn-warning" type="button"
+                            [disabled]="form.invalid">Find duplicates</button>
+                    </div>
+                </div>
+            </form>
+
+            <p *ngIf="selected.selectedFolders.length === 0">No selected folders</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" *ngFor="let select of selected.selectedFolders">
+                    {{select.name}}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" *ngIf="duplicatesList">
+            <h4>Duplicates</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let dup of duplicatesList">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            <button type="button" class="btn btn-link" (click)="compare(dup)">
+                                <fa-icon [icon]="icon_show"></fa-icon>
+                            </button>
+                            <span (click)="compare(dup)">
+                                {{dup.filename}}
+                            </span>
+                        </div>
+                      </div>
+                      <span class="badge bg-primary rounded-pill">{{dup.duplicates.length}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<pmerge-toast></pmerge-toast>

@@ -1,2 +1,4 @@
 difPy==2.4.4
+Eel==0.14.0
 ExifRead==3.0.0
+toml==0.10.2
