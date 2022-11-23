@@ -7,7 +7,7 @@
 
 import eel
 from config import Config
-from api import *
+import api
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PMergeFile } from '../interfaces';
+import { Duplicate, PMergeFile } from '../interfaces';
 import { ToasterService } from './toaster.service';
 
 const EEL = (window as any).eel
@@ -12,7 +12,7 @@ export class CallApiService {
   private $output = new BehaviorSubject<string>("")
   private $inputList = new BehaviorSubject<PMergeFile[]>([])
   private $merge = new BehaviorSubject<string>("")
-  private $duplicates = new BehaviorSubject<any[]>([])
+  private $duplicates = new BehaviorSubject<Duplicate[]>([])
 
   constructor(private toaster: ToasterService) { }
 
@@ -60,15 +60,13 @@ export class CallApiService {
     return this.$merge;
   }
 
-  duplicates(output: string): Observable<any> {
+  duplicates(output: string): Observable<Duplicate[]> {
     console.log(`duplicates(${output})`);
     EEL.duplicates(output)()
     .then((r: any) => {
       const x  = JSON.parse(r);
-      console.log(x);
-      let duplicates: any[] = [];
+      let duplicates: Duplicate[] = [];
       Object.keys(x).forEach((k) => {
-        console.log(k);
           duplicates.push(x[k])
         })
         this.$duplicates.next(duplicates)

@@ -8,8 +8,8 @@
             <img [src]="origSrc" class="w-100 img-thumbnail" />
             <div class="card-body">
                 <div class="d-flex flex-row">
-                    <div class="p-2 flex-grow-1">{{duplicate.location}}</div>
-                    <div class="p-2"><button type="button" class="btn btn-danger" (click)="delete(duplicate.location)">
+                    <div class="p-2 flex-grow-1">{{duplicate?.location}}</div>
+                    <div class="p-2"><button type="button" class="btn btn-danger" (click)="delete(duplicate?.location)">
                             <fa-icon [icon]="icon_delete"></fa-icon>
                         </button>
                     </div>
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="card p-2" *ngFor="let dup of duplicate.duplicates, let i = index">
+        <div class="card p-2" *ngFor="let dup of duplicate?.duplicates, let i = index">
             <img [src]="dupSrc$[i]|async" class="w-100 img-thumbnail" />
             <div class="card-body">
                 <div class="d-flex flex-row">

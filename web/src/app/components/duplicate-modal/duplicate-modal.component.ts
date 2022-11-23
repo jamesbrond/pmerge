@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CallApiService } from 'src/app/services';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
+import { Duplicate } from 'src/app/interfaces';
 
 
 @Component({
@@ -12,7 +13,8 @@ import { Observable } from 'rxjs';
 })
 export class DuplicateModalComponent implements OnInit {
 
-  @Input() duplicate: any;
+  @Input() duplicate: Duplicate | undefined;
+
   origSrc: string = '';
   dupSrc$: Observable<string>[] = [];
 
@@ -21,16 +23,20 @@ export class DuplicateModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private api: CallApiService) { }
 
   ngOnInit(): void {
-    this.api.image(this.duplicate.location).subscribe((x) => this.origSrc = x);
-    for (let dup of this.duplicate.duplicates) {
-      this.dupSrc$.push(this.api.image(dup));
+    if (this.duplicate) {
+      this.api.image(this.duplicate.location).subscribe((x) => this.origSrc = x);
+      for (let dup of this.duplicate.duplicates) {
+        this.dupSrc$.push(this.api.image(dup));
+      }
     }
   }
 
-  delete(path: string) {
-    if (confirm(`Are you sure you want to delete ${path}?`)) {
-      this.api.delete([path]);
-      this.activeModal.close(this.duplicate);
+  delete(path: string | undefined) {
+    if (path) {
+      if (confirm(`Are you sure you want to delete ${path}?`)) {
+        this.api.delete([path]);
+        this.activeModal.close(this.duplicate);
+      }
     }
   }
 

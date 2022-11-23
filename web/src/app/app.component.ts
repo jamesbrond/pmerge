@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError, of, Subscription } from 'rxjs';
-import { faE, faEye } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { PreviewComponent } from './components';
-import { PMergeFile } from './interfaces';
+import { Duplicate, PMergeFile } from './interfaces';
 import { CallApiService, SelectedFoldersService, ToasterService } from './services';
 import { DuplicateModalComponent } from './components/duplicate-modal/duplicate-modal.component';
 
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   output: string = '';
 
   mergeOutput: string = "";
-  duplicatesList: any[] = [];
+  duplicatesList: Duplicate[] = [];
 
   icon_show = faEye;
 

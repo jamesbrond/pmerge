@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col" *ngIf="duplicatesList">
+        <div class="col-6 align-self-center offset-md-3" *ngIf="duplicatesList.length > 0">
             <h4>Duplicates</h4>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let dup of duplicatesList">

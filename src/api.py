@@ -21,17 +21,18 @@ def roots():
 
 @eel.expose
 def files(folder):
-    files = os.listdir(folder)
+    """Returns a list of files or folders in folder"""
     return [{
         "name": f,
         "path": os.path.abspath(os.path.join(folder, f)),
         "is_dir": os.path.isdir(os.path.join(folder, f)),
         "readonly": False
-    } for f in files]
+    } for f in os.listdir(folder)]
 
 
 @eel.expose
 def image(path):
+    """Returns the base64 of the image usable in <img> element"""
     img = cv2.imread(path)
     jpg_img = cv2.imencode('.jpg', img)
     return f"data:image/jpeg;base64,{base64.b64encode(jpg_img[1]).decode('utf-8')}"
@@ -54,10 +55,12 @@ def duplicates(output):
     """Find duplicated images"""
     return pmerge.duplicates(output, False)
 
+
 @eel.expose
-def delete(files):
-    for file in files:
-        if os.path.isfile(file):
-            os.remove(file)
-        elif os.path.isdir(file):
-            os.rmdir(file)
+def delete(deleteList):
+    """Deletes files or folders"""
+    for f in deleteList:
+        if os.path.isfile(f):
+            os.remove(f)
+        elif os.path.isdir(f):
+            os.rmdir(f)

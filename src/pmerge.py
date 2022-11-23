@@ -149,25 +149,25 @@ def merge_folders(folders, output):
     if not os.path.exists(output):
         os.makedirs(output)
 
-    str = ''
+    txt = ''
     for folder in folders:
-        str += merge(folder, output)
-    return str
+        txt += merge(folder, output)
+    return txt
 
 
 def merge(folder, output):
     """Merge all photoes in the folder"""
-    str = f"Merge {folder}"
+    txt = f"Merge {folder}"
     print(f"Merge {folder}")
     for curdir in folder_files(folder):
         new_file = output_file(output, curdir)
-        str += f"{curdir['name']} -> {new_file}"
+        txt += f"{curdir['name']} -> {new_file}"
         print(f"{curdir['name']} -> {new_file}")
         copy_file(curdir['name'], new_file)
-    return str
+    return txt
 
 
-def duplicates(folder, write_to_file = True):
+def duplicates(folder, write_to_file=True):
     """Find duplicated images in folder"""
     search = dif(
         folder,

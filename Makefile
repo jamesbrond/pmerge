@@ -43,6 +43,7 @@ devdeps: py-devdeps ## Install dependencies for depveloper
 lint: py-lint ng-lint ## Run lint analysis
 
 run: compile
+	@$(call prompt-info,Run photomerge)
 	@src/photomerge.py
 
 # ~@:-]
