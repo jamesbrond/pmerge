@@ -1,49 +1,58 @@
 # This is an example of Makefile
 
-PACKAGE      := pmerge
-PYTHON       := /usr/bin/python3.10
-VERSION_EXP  := [0-9\.]+
-VERSION_FILE := .version
-BUILD_DIR    := build
-DIST_DIR     := dist
-NG_DIR       := web
+PACKAGE         := pmerge
+PYTHON          := /cygdrive/c/Users/320072283/bin/python/python.exe
+VERSION_EXP     := ^( *)([0-9.]+)(.*)
+VERSION_FILE    := .version
+BUILD_DIR       := .build
+DIST_DIR        := dist
+MAKE_DIR        := $(BUILD_DIR)/.make
+NG_DIR          := web
+
+DIRS = $(MAKE_DIR)
 
 SHELL:=/bin/bash
 
--include .make/misc.mk
--include .make/py.mk
--include .make/git.mk
--include .make/angular.mk
+-include $(MAKE_DIR)/misc.mk
+-include $(MAKE_DIR)/git.mk
+-include $(MAKE_DIR)/py.mk
+-include $(MAKE_DIR)/angular.mk
 
-MAKE_INCLUDES = $(shell grep -E '^-include .*\s$$' Makefile | awk 'BEGIN {FS = " "}; {print $$2}')
-$(MAKE_INCLUDES):
-	@mkdir -p $$(dirname $@); \
-	NAME=$$(basename $@); \
-	URL=$$(echo "https://raw.githubusercontent.com/jamesbrond/jamesbrond/main/Makefile/$$NAME"); \
+$(MAKE_DIR)/%.mk: | $(MAKE_DIR)
+	@URL=$$(echo "https://raw.githubusercontent.com/jamesbrond/jamesbrond/main/Makefile/.make/$(@F)"); \
 	echo "get $$URL"; \
 	curl -s -H 'Cache-Control: no-cache, no-store' $${URL} -o $@
 
-
-PHONY: clean clean-dist lint
+.PHONY: build clean distclean dist init lint test
 .DEFAULT_GOAL := help
 
-$(BUILD_DIR):
+$(DIRS):
+	@$(call log-debug,MAKE,make '$@' folder)
 	@mkdir -p $@
 
-clean-dist: clean clean-source-dist py-clean-venv ## Clean-up the entire solution
+build:: ## Compile the entire program
+	@$(call log-info,MAKE,$@ done)
 
-clean: py-clean-cache ## Clean-up latex build artifacts
+clean:: ## Delete all files created by this makefile, however don’t delete the files that record configuration or environment
+	@$(call log-info,MAKE,$@ done)
 
-compile: $(BUILD_DIR) ng-compile
+distclean:: clean ## Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program
+	@-$(RMDIR) $(BUILD_DIR) $(NULL_STDERR)
+	@-$(RMDIR) $(DIST_DIR) $(NULL_STDERR)
+	@-$(RMDIR) $(MAKE_DIR) $(NULL_STDERR)
+	@$(call log-info,MAKE,$@ done)
 
-deps: py-deps ## Install dependencies
+dist:: build ## Create a distribution file or files for this program
+	@$(call log-info,MAKE,$@ done)
 
-devdeps: py-devdeps ## Install dependencies for depveloper
+init:: ## Initialize development environment
+	@$(call log-info,MAKE,$@ done)
 
-lint: py-lint ng-lint ## Run lint analysis
+lint:: ## Perform static linting
+	@$(call log-info,MAKE,$@ done)
 
-run: compile
+run: build
 	@$(call prompt-info,Run photomerge)
-	@src/photomerge.py
+	@$(PYENV)/python src/photomerge.py
 
 # ~@:-]

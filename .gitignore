@@ -1,9 +1,9 @@
 .make/
-build/
+.build/
 dist/
 test/
 tmp/
-venv/
+.venv/
 src/__pycache__/
 
 web/.angular/

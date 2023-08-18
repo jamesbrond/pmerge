@@ -14,7 +14,7 @@ if __name__ == "__main__":
     cfg = Config()
 
     try:
-        eel.init('build/ng', allowed_extensions=['.js', '.html'])
+        eel.init('.build/ng', allowed_extensions=['.js', '.html'])
 
         eel.start(
             'index.html',
